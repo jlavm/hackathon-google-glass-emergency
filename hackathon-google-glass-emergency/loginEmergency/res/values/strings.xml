@@ -1,7 +1,20 @@
 <resources>
 
     <string name="app_name">loginEmergency</string>
+    <string name="app_menu">loginEmergency</string>
     <string name="glass_voice_prompt">Login name, please</string>
     <string name="launch_keyword">Login</string>
+    <string name="menu_alert">Alerta</string>
+    <string name="menu_alert_team">Team</string>
+    <string name="menu_alert_map">Map</string>
+    <string name="menu_alarm">Alarma</string>
+    <string name="menu_aprox">Aproximación</string>
+    <string name="menu_control">Control</string>
+    <string name="menu_triaje">Triaje</string>
+    <string name="menu_sub">SUB-SVA</string>
+    <string name="menu_estab">Estabilización</string>
+    <string name="menu_transp">Transporte</string>
+    <string name="menu_transf">Transferencia</string>
+    <string name="menu_react">Reactivación</string>
 
 </resources>

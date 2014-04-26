@@ -11,19 +11,55 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
+        public static final int alvaro=0x7f020000;
+        public static final int antonio=0x7f020001;
+        public static final int ic_launcher=0x7f020002;
+        public static final int press_news=0x7f020003;
+        public static final int roja=0x7f020004;
+        public static final int yo=0x7f020005;
     }
     public static final class id {
-        public static final int device_id=0x7f070001;
-        public static final int login_details=0x7f070000;
+        public static final int alarm=0x7f080004;
+        public static final int alert=0x7f080003;
+        public static final int aprox=0x7f080005;
+        public static final int control=0x7f08000c;
+        public static final int device_id=0x7f080001;
+        public static final int estab=0x7f080009;
+        public static final int login_details=0x7f080000;
+        public static final int map=0x7f08000e;
+        public static final int mapview=0x7f080002;
+        public static final int react=0x7f080006;
+        public static final int sub=0x7f08000a;
+        public static final int team=0x7f08000d;
+        public static final int trans=0x7f080007;
+        public static final int transp=0x7f080008;
+        public static final int triaje=0x7f08000b;
     }
     public static final class layout {
         public static final int login_layout=0x7f030000;
+        public static final int map_layout=0x7f030001;
+    }
+    public static final class menu {
+        public static final int activity_main=0x7f070000;
+        public static final int alert_menu=0x7f070001;
     }
     public static final class string {
+        public static final int app_menu=0x7f050001;
         public static final int app_name=0x7f050000;
-        public static final int glass_voice_prompt=0x7f050001;
-        public static final int launch_keyword=0x7f050002;
+        public static final int glass_voice_prompt=0x7f050002;
+        public static final int launch_keyword=0x7f050003;
+        public static final int menu_alarm=0x7f050007;
+        public static final int menu_alert=0x7f050004;
+        public static final int menu_alert_map=0x7f050006;
+        public static final int menu_alert_team=0x7f050005;
+        public static final int menu_aprox=0x7f050008;
+        public static final int menu_control=0x7f050009;
+        public static final int menu_estab=0x7f05000c;
+        public static final int menu_react=0x7f05000f;
+        public static final int menu_sub=0x7f05000b;
+        public static final int menu_transf=0x7f05000e;
+        public static final int menu_transp=0x7f05000d;
+        public static final int menu_triaje=0x7f05000a;
     }
     public static final class style {
         /** 
