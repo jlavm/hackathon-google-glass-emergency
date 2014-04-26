@@ -10,12 +10,5 @@
         android:id="@+id/login_details"
         android:gravity="center"
         />
-    
-      <TextView 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/device_id"
-        android:gravity="center"
-        />
 
 </LinearLayout>
