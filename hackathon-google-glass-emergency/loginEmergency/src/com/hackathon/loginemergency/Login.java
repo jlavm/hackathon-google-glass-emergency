@@ -13,10 +13,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
@@ -30,6 +33,14 @@ public class Login extends Activity implements SensorEventListener {
 	public String userID;
 	SensorManager sm;
 	float previous;
+	int counter;
+	int end;
+	int mFinishSoundId;
+	int mCountDownSoundId;
+	private SoundPool mSoundPool;
+	AudioManager mAudioManager;
+	final int SOUND_PRIORITY = 1;
+	final int MAX_STREAMS = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +58,12 @@ public class Login extends Activity implements SensorEventListener {
 
 		Log.d("Sensor", "Ready to read sensor");
 		// new CallAPI().execute("https://github.com/", userID, deviceID);
+
+		counter = 0;
+		end = 0;
+
+		mAudioManager = (AudioManager) this
+				.getSystemService(Context.AUDIO_SERVICE);
 
 		sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 		if (sm.getSensorList(Sensor.TYPE_ACCELEROMETER).size() != 0) {
@@ -68,18 +85,40 @@ public class Login extends Activity implements SensorEventListener {
 		if (timestamp != 0) {
 			final float dT = (event.timestamp - timestamp) * NS2S;
 			// Axis of the rotation sample, not normalized yet.
-			int axisX = (int)event.values[0]*10;
-			int axisY = (int)event.values[1]*10;
-			int axisZ = (int)event.values[2]*10;
+			int axisX = (int) event.values[0] * 10;
+			int axisY = (int) event.values[1] * 10;
+			int axisZ = (int) event.values[2] * 10;
 
-			Log.d("Sensor", axisX + ", " + axisY + ", " + axisZ);
+			// Log.d("Sensor", axisX + ", " + axisY + ", " + axisZ);
 
-			
-			
-			
+			if (Math.abs(axisY - previous) <= 3) {
+				counter++;
+			} else {
+				counter = 0;
+			}
+
+			Log.d("sensor", counter + "");
+			if (counter > 75) {
+				Log.d("sensor", "ALAAAAAARM");
+				// mSoundPool = new SoundPool(MAX_STREAMS,
+				// AudioManager.STREAM_MUSIC, 0);
+				// mFinishSoundId = mSoundPool.load(getBaseContext(),
+				// R.raw.start, SOUND_PRIORITY);
+				// mCountDownSoundId = mSoundPool.load(getBaseContext(),
+				// R.raw.countdown_bip, SOUND_PRIORITY);
+				mAudioManager.playSoundEffect(11);
+
+				counter = 0;
+			}
+
+			previous = axisY;
+
 		}
 		timestamp = event.timestamp;
-
+		end++;
+		if (end == 5000) {
+			this.finish();
+		}
 	}
 
 	@Override
