@@ -57,7 +57,7 @@ public class Login extends Activity implements SensorEventListener {
 		login_details.setText("Welcome, " + userID);
 
 		Log.d("Sensor", "Ready to read sensor");
-		// new CallAPI().execute("https://github.com/", userID, deviceID);
+		new CallAPI().execute("https://hackathonsolidario.com/", userID, deviceID);
 
 		counter = 0;
 		end = 0;
@@ -97,27 +97,23 @@ public class Login extends Activity implements SensorEventListener {
 				counter = 0;
 			}
 
-			Log.d("sensor", counter + "");
 			if (counter > 75) {
 				Log.d("sensor", "ALAAAAAARM");
-				// mSoundPool = new SoundPool(MAX_STREAMS,
-				// AudioManager.STREAM_MUSIC, 0);
-				// mFinishSoundId = mSoundPool.load(getBaseContext(),
-				// R.raw.start, SOUND_PRIORITY);
-				// mCountDownSoundId = mSoundPool.load(getBaseContext(),
-				// R.raw.countdown_bip, SOUND_PRIORITY);
 				mAudioManager.playSoundEffect(11);
-
+				Log.d("sensor", counter + "");
+				//counter =- 3;
+			}
+			
+			if (counter > 125) {
+				new CallAPI().execute("https://hackathonsolidario.com/"+deviceID, userID, deviceID);
 				counter = 0;
 			}
-
 			previous = axisY;
-
 		}
 		timestamp = event.timestamp;
 		end++;
-		if (end == 5000) {
-			this.finish();
+		if (end >= 5000) {
+			finish();
 		}
 	}
 
