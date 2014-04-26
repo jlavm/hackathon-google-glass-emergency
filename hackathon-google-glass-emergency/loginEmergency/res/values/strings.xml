@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="app_name">loginEmergency</string>
+    <string name="glass_voice_prompt">Login name, please</string>
+    <string name="launch_keyword">Login</string>
+
+</resources>
