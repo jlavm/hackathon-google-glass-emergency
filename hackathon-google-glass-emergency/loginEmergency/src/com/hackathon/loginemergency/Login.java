@@ -13,6 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
@@ -20,10 +24,12 @@ import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.widget.TextView;
 
-public class Login extends Activity {
+public class Login extends Activity implements SensorEventListener {
 
 	public String deviceID;
 	public String userID;
+	SensorManager sm;
+	float previous;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +44,50 @@ public class Login extends Activity {
 
 		TextView login_details = (TextView) findViewById(R.id.login_details);
 		login_details.setText("Welcome, " + userID);
-		
-		new CallAPI().execute("https://github.com/", userID, deviceID);
+
+		Log.d("Sensor", "Ready to read sensor");
+		// new CallAPI().execute("https://github.com/", userID, deviceID);
+
+		sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+		if (sm.getSensorList(Sensor.TYPE_ACCELEROMETER).size() != 0) {
+			Sensor s = sm.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+
+			// login_details.setText(s.getResolution()+"");
+			sm.registerListener(this, s, SensorManager.SENSOR_DELAY_NORMAL);
+		}
+	}
+
+	private static final float NS2S = 1.0f / 1000000000.0f;
+	private final float[] deltaRotationVector = new float[4];
+	private float timestamp;
+
+	public void onSensorChanged(SensorEvent event) {
+		// This timestep's delta rotation to be multiplied by the current
+		// rotation
+		// after computing it from the gyro sample data.
+		if (timestamp != 0) {
+			final float dT = (event.timestamp - timestamp) * NS2S;
+			// Axis of the rotation sample, not normalized yet.
+			int axisX = (int)event.values[0]*10;
+			int axisY = (int)event.values[1]*10;
+			int axisZ = (int)event.values[2]*10;
+
+			Log.d("Sensor", axisX + ", " + axisY + ", " + axisZ);
+
+			
+			
+			
+		}
+		timestamp = event.timestamp;
 
 	}
+
+	@Override
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
 
 class CallAPI extends AsyncTask<String, String, String> {
@@ -66,11 +112,11 @@ class CallAPI extends AsyncTask<String, String, String> {
 			post.setHeader("Content-type", "application/json");
 			post.setEntity(se);
 			client.execute(post);
-			Log.d("POST","Done");
+			Log.d("POST", "Done");
 		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			Log.d("POST","Failed");
+			Log.d("POST", "Failed");
 		}
 
 		return "";
