@@ -1,7 +1,7 @@
 package com.hackathon.loginemergency;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -10,8 +10,8 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.app.Activity;
-import android.content.Intent;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -21,13 +21,9 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Settings.Secure;
-import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.widget.TextView;
 
-public class Login extends Activity {
+public class DeadMan extends Activity implements SensorEventListener {
 
 	public String deviceID;
 	public String userID;
@@ -42,41 +38,76 @@ public class Login extends Activity {
 	final int SOUND_PRIORITY = 1;
 	final int MAX_STREAMS = 1;
 
-	TextView device_ID;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_layout);
 
-		ArrayList<String> voiceResults = getIntent().getExtras()
-				.getStringArrayList(RecognizerIntent.EXTRA_RESULTS);
+		counter = 0;
+		end = 0;
 
-		userID = voiceResults.get(0);
-		deviceID = Secure.getString(getApplicationContext()
-				.getContentResolver(), Secure.ANDROID_ID);
+		mAudioManager = (AudioManager) this
+				.getSystemService(Context.AUDIO_SERVICE);
 
-		TextView login_details = (TextView) findViewById(R.id.login_details);
+		sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+		if (sm.getSensorList(Sensor.TYPE_ACCELEROMETER).size() != 0) {
+			Sensor s = sm.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
 
-		login_details.setText("Welcome, " + userID);
+			// login_details.setText(s.getResolution()+"");
+			sm.registerListener(this, s, SensorManager.SENSOR_DELAY_NORMAL);
+		}
 
-		// device_ID = (TextView) findViewById(R.id.device_id);
-		// device_ID.setText(deviceID);
+		
 
-		Log.d("Sensor", "Ready to read sensor");
-		new CallAPI().execute("https://hackathonsolidario.com/", userID,
-				deviceID);
+	}
 
-		final Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				// Do something after 5s = 5000ms
+	final float NS2S = 1.0f / 1000000000.0f;
+	final float[] deltaRotationVector = new float[4];
+	float timestamp;
+	
+	public void onSensorChanged(SensorEvent event) {
+		// This timestep's delta rotation to be multiplied by the current
+		// rotation
+		// after computing it from the gyro sample data.
+		if (timestamp != 0) {
+			final float dT = (event.timestamp - timestamp) * NS2S;
+			// Axis of the rotation sample, not normalized yet.
+			int axisX = (int) event.values[0] * 10;
+			int axisY = (int) event.values[1] * 10;
+			int axisZ = (int) event.values[2] * 10;
 
-				finish();
-				startActivity(new Intent(Login.this, MenuActivity.class));
+			// Log.d("Sensor", axisX + ", " + axisY + ", " + axisZ);
+
+			if (Math.abs(axisY - previous) <= 3) {
+				counter++;
+			} else {
+				counter = 0;
 			}
-		}, 3000);
+
+			if (counter > 75) {
+				Log.d("sensor", "ALAAAAAARM");
+				mAudioManager.playSoundEffect(11);
+				Log.d("sensor", counter + "");
+				// counter =- 3;
+			}
+
+			if (counter > 125) {
+				new CallAPI().execute("https://hackathonsolidario.com/"
+						+ deviceID, userID, deviceID);
+				counter = 0;
+			}
+			previous = axisY;
+		}
+		timestamp = event.timestamp;
+		end++;
+		if (end >= 5000) {
+			finish();
+		}
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
 
 	}
 
@@ -116,4 +147,5 @@ public class Login extends Activity {
 
 		}
 	} // end CallAPI
+
 }
